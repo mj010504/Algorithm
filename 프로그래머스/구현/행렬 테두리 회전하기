@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int rotate(vector<vector<int>> &v, vector<int> q) {
+    int minn = INT_MAX;
+    int x = q[0] - 1, y = q[1] - 1, xx = q[2] - 1, yy = q[3] - 1;
+    auto tv = v;
+
+    tv[x][y] = v[x + 1][y];
+    tv[x][yy] = v[x][yy - 1];
+    tv[xx][y] = v[xx][y + 1];
+    tv[xx][yy] = v[xx - 1][yy];
+
+    minn = min(tv[x][y], tv[x][yy]);
+    minn = min(minn, tv[xx][y]);
+    minn = min(minn, tv[xx][yy]);
+
+    for(int i = y + 1; i < yy; i++) {
+        tv[x][i] = v[x][i - 1];
+        minn = min(v[x][i - 1], minn);
+    }
+
+    for(int i = x + 1; i < xx; i++) {
+        tv[i][yy] = v[i - 1][yy];
+        minn = min(v[i- 1][yy], minn);
+    }
+
+    for(int i = yy - 1; i > y; i--) {
+        tv[xx][i] = v[xx][i + 1];
+        minn = min(minn, v[xx][i + 1]);
+    }
+
+    for(int i = xx - 1; i > x; i--) {
+        tv[i][y] = v[i + 1][y];
+        minn = min(minn, v[i + 1][y]);
+    }
+
+    v = tv;
+    return minn;
+}
+
+vector<int> solution(int r, int h, vector<vector<int>> qv) {
+    vector<int> res;
+    vector<vector<int>> v(r, vector<int> (h));
+
+    int temp = 1;
+    for(int i = 0; i < r; i++) {
+        for(int j = 0; j < h; j++) {
+            v[i][j] = temp;
+            temp++;
+        }
+    }
+
+    for(auto q : qv) {
+        int minn = rotate(v, q); 
+        res.push_back(minn);
+    }
+
+    return res;
+}
